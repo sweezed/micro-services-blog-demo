@@ -1,0 +1,55 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srvc
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "7200"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "7200"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: posts.com
+      http:
+        paths:
+          - path: /post/create
+            pathType: Prefix
+            backend:
+              service:
+                name: posts-cluster-ip-srvc
+                port:
+                  number: 4000
+
+          - path: /post/?(.*)/comments
+            pathType: Prefix
+            backend:
+              service:
+                name: comments-cluster-ip-srvc
+                port:
+                  number: 4100
+
+          - path: /posts
+            pathType: Prefix
+            backend:
+              service:
+                name: query-cluster-ip-srvc
+                port:
+                  number: 4200
+          
+          - path: /socket.io/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: event-bus-srvc
+                port:
+                  number: 4500
+
+          - path: /?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: client-cluster-ip-srvc
+                port:
+                  number: 3000
+
+          

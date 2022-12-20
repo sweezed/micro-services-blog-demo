@@ -1,0 +1,40 @@
+apiVersion: skaffold/v4beta1
+kind: Config
+metadata:
+  name: micro-service-blog-copy
+build:
+  artifacts:
+  - image: sweez1968/client
+    context: client
+    docker:
+      dockerfile: Dockerfile
+  - image: sweez1968/comments
+    context: comments
+    docker:
+      dockerfile: Dockerfile
+  - image: sweez1968/event-bus
+    context: event-bus
+    docker:
+      dockerfile: Dockerfile
+  - image: sweez1968/moderation
+    context: moderation
+    docker:
+      dockerfile: Dockerfile
+  - image: sweez1968/posts
+    context: posts
+    docker:
+      dockerfile: Dockerfile
+  - image: sweez1968/query
+    context: query
+    docker:
+      dockerfile: Dockerfile
+manifests:
+  rawYaml:
+  - client/k8s/client-deploy.yml
+  - comments/k8s/comments-deploy.yml
+  - event-bus/k8s/event-bus-deploy.yml
+  - infra/k8s/ingress-srvc.yml
+  - infra/k8s/posts-srvc.yaml
+  - moderation/k8s/moderation-deploy.yml
+  - posts/k8s/posts-deploy.yml
+  - query/k8s/query-deploy.yml
